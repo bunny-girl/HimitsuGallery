@@ -11,7 +11,7 @@ const serveFiles = path => {
 };
 
 let content;
-const basePath = '/Users/edel.ma/Downloads/test/';
+const basePath = 'path';
 const imageExtArr = ['.jpg', '.jpeg', '.png'];
 const videoExtArr = ['.mov', '.avi', '.mp4'];
 
