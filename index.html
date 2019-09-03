@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Index</title>
+    <link rel="stylesheet" href="https://cdn.bootcss.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <style>
+        .preview {
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+<div class="container-fluid">
+    <button id="go">始め</button>
+    <button id="convert">変身</button>
+    <button id="back">戻る</button>
+    <ul id="res">
+    </ul>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+<script>
+    const resContainer = document.querySelector('#res');
+    const launchButton = document.querySelector('#go');
+    const convertButton = document.querySelector('#convert');
+    const backButton = document.querySelector('#back');
+    const preview = document.querySelector('#preview');
+
+    const el = ({tag, text, className}) => {
+        let node = document.createElement(tag);
+        if (text) {
+            let content = document.createTextNode(text);
+            node.appendChild(content);
+        }
+        if (className) {
+            node.classList.push(className);
+        }
+        return node;
+    };
+
+    const previewHandler = async e => {
+        preview.src = e.target.dataset.content;
+    };
+
+    const getDir = async () => {
+        resContainer.innerHTML = '';
+        let _res = await fetch('./dir');
+        let res = await _res.json();
+
+        res.map(item => {
+            let node = el({tag: 'li', text: item.name});
+            if (item.content) {
+                // node.setAttribute('data-content', item.content);
+                node.setAttribute('data-toggle', 'tooltip');
+                node.setAttribute('data-html', 'true');
+                node.setAttribute('title', `<img class="preview" alt="fuck" src="${item.content}">`);
+
+                // node.addEventListener('click', previewHandler);
+            }
+
+            resContainer.appendChild(node);
+        });
+        $('#res li').tooltip();
+    };
+
+    launchButton.addEventListener('click', getDir);
+
+    convertButton.addEventListener('click', async e => {
+        await fetch('./convert');
+        await getDir();
+    });
+
+    backButton.addEventListener('click', async e => {
+        await fetch('./back');
+        await getDir();
+    });
+
+
+</script>
+</body>
+</html>
